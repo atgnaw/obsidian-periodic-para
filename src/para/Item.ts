@@ -9,7 +9,7 @@ import { File } from '../periodic/File';
 import { Markdown } from '../component/Markdown'
 
 export class Item {
-  dir: string;
+  dir: string; //
   app: App;
   settings: PluginSettings;
   file: File;

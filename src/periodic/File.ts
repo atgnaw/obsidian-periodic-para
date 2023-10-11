@@ -14,6 +14,16 @@ export class File {
     this.dataview = dataview;
   }
 
+  /**
+   * @param tags1
+   * @param tags2
+   * @returns
+   * @description 判断两个 tags 是否有公共前缀
+   * @example
+   * tags1: #work/project-1 #work/project-2
+   * tags2: #work
+   * return true
+   */
   private hasCommonPrefix(tags1: string[], tags2: string[]) {
     for (const tag1 of tags1) {
       for (const tag2 of tags2) {
@@ -25,6 +35,16 @@ export class File {
     return false;
   }
 
+ /**
+  * @param fileFolder
+  * @param condition
+  * @returns
+  * @description 获取文件夹下的 README 列表
+  * @example
+  * fileFolder: 1. Projects
+  * condition: { tags: ['#work'] }
+  * return
+  */
   list(fileFolder: string, condition: { tags: string[] } = { tags: [] }) {
     const folder = this.app.vault.getAbstractFileByPath(fileFolder);
 
@@ -56,7 +76,7 @@ export class File {
             }
 
             if (README instanceof TFile) {
-              const link = this.app.metadataCache.fileToLinktext(
+              const link = this.app.metadataCache.fileToLinktext( //为文件生成链接文本 如果文本名唯一则返回文件名
                 README,
                 README?.path
               );
@@ -73,8 +93,15 @@ export class File {
     return `No files in ${fileFolder}`;
   }
 
+  /**
+   * @param link 
+   * @param sourcePath 
+   * @param fileFolder 
+   * @returns 
+   * @description 获取文件
+   */
   get(link: string, sourcePath = '', fileFolder?: string) {
-    const file = this.app.metadataCache.getFirstLinkpathDest(link, sourcePath);
+    const file = this.app.metadataCache.getFirstLinkpathDest(link, sourcePath); //遍历获取最近文件名与link: string一样的文件
 
     if (!fileFolder) {
       return file;
@@ -84,11 +111,16 @@ export class File {
       return file;
     }
   }
-
+  
+  /**
+   * @param filePath
+   * @returns
+   * @description 获取文件的 tags
+   */
   tags(filePath: string) {
     let {
       frontmatter: { tags },
-    } = this.dataview.page(filePath)?.file || { frontmatter: {} };
+    } = this.dataview.page(filePath)?.file || { frontmatter: {} }; //利用dataview api获取文件的tags
 
     if (!tags) {
       return [];

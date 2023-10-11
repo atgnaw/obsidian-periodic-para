@@ -83,7 +83,7 @@ export class Date {
     if (day) {
       const today = `${year}-${String(month).padStart(2, '0')}-${String(
         day
-      ).padStart(2, '0')}`;
+      ).padStart(2, '0')}`;//注释：
 
       return {
         from: today,
@@ -164,7 +164,9 @@ export class Date {
       to: null,
     };
   }
+ 
 
+  // 这段函数筛选文本 之后应该放在File.ts中
   files(
     parsed: DateType = {
       year: null,

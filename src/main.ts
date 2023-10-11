@@ -34,17 +34,17 @@ const DEFAULT_SETTINGS: PluginSettings = {
 };
 
 export default class PeriodicPARA extends Plugin {
-  settings: PluginSettings;
-  project: Project;
-  area: Area;
-  resource: Resource;
-  archive: Archive;
-  task: Task;
-  file: File;
-  bullet: Bullet;
-  date: Date;
-  dataview: DataviewApi;
-  views: Record<string, any>;
+  settings: PluginSettings;          //插件设置
+  project: Project;                  //项目类
+  area: Area;                        //领域类
+  resource: Resource;                //资源类
+  archive: Archive;                  //归档类
+  task: Task;                        //任务类
+  file: File;                        //文件类
+  bullet: Bullet;                    //Bullet类
+  date: Date;                        //日期类
+  dataview: DataviewApi;             //dataview api
+  views: Record<string, any>;        //视图
 
   constructor(app: App, manifest: PluginManifest) {
     super(app, manifest);
@@ -92,10 +92,10 @@ export default class PeriodicPARA extends Plugin {
       const view = source.trim() as keyof typeof this.views;
       const legacyView = `${view}ByTime` as keyof typeof this.views;
 
-      if (!view) {
+      if (!view) { //代码框内为空，报错
         return renderError(
-          ERROR_MESSAGES.NO_VIEW_PROVIDED,
-          el.createEl('div'),
+          ERROR_MESSAGES.NO_VIEW_PROVIDED, //渲染文本
+          el.createEl('div'), //创建HTML <div> 区块元素
           ctx.sourcePath
         );
       }
@@ -104,7 +104,7 @@ export default class PeriodicPARA extends Plugin {
         !Object.keys(this.views).includes(view) &&
         !Object.keys(this.views).includes(legacyView)
       ) {
-        return renderError(
+        return renderError( //代码框内容不是注册的函数，报错。
           `${ERROR_MESSAGES.NO_VIEW_EXISTED}: ${view}`,
           el.createEl('div'),
           ctx.sourcePath

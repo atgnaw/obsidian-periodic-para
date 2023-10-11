@@ -27,7 +27,7 @@ export class Area extends Item {
       const file = this.file.get(link, '', this.settings.periodicNotesPath);
 
       if (file instanceof TFile) {
-        const reg = new RegExp(`# ${header}([\\s\\S]+?)\n#`);
+        const reg = new RegExp(`# ${header}([\\s\\S]+?)\n#`); //正则表达式：匹配# header内容 #之间的内容
 
         if (file) {
           tasks.push(async () => {
@@ -56,7 +56,7 @@ export class Area extends Item {
 
     return areaList;
   }
-
+  //文档中的插件代码块渲染
   listByTime = async (
     source: string,
     el: HTMLElement,
@@ -79,7 +79,7 @@ export class Area extends Item {
         `${index + 1}. [[${area}|${regMatch?.length ? regMatch[1] : ''}]]`
       );
     });
-
+////////////////////////////////////////////////////
     const component = new Markdown(div);
 
     MarkdownRenderer.renderMarkdown(

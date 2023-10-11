@@ -165,7 +165,7 @@ export class Project extends Item {
     projectList.map((project: string, index: number) => {
       // WOT.README
       // 1. Projects/分享-2023 WOT 分享会/README
-      const regMatch = project.match(/\/(.*)\//);
+      const regMatch = project.match(/\/(.*)\//);// 正则表达式：匹配两个斜杠之间的内容
 
       list.push(
         `${index + 1}. [[${project}|${regMatch?.length ? regMatch[1] : ''}]] ${

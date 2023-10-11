@@ -72,18 +72,18 @@ export class Task {
 
     let tasks = [];
     // 收集日期范围内的日记文件
-    const dailyTasks = this.dataview.pages('').file.tasks.where((t: STask) =>
-      this.filter(t, {
+    const dailyTasks = this.dataview.pages('').file.tasks.where((t: STask) =>//
+      this.filter(t, { //filter函数限定了只在日记文件中搜索：对任务所在文件的章节进行判断（所以这基本导致了只会搜索出日记部分的任务列表）
         date: TaskStatusType.RECORD,
-        ...condition,
+        ...condition,   //from, to
       })
     );
 
     tasks = [...dailyTasks];
 
     // 收集日期范围内的非日记文件
-    const files = this.date.files(parsed);
-    const pages = Object.values(files).flat();
+    const files = this.date.files(parsed); //获取指定日期范围内的 weeks，quarters 和 months，
+    const pages = Object.values(files).flat(); // 二维数组转一维数组
 
     if (pages.length) {
       const nonDailyTasks = this.dataview
@@ -107,7 +107,7 @@ export class Task {
     ctx: MarkdownPostProcessorContext
   ) => {
     const filepath = ctx.sourcePath;
-    const tags = this.file.tags(filepath);
+    const tags = this.file.tags(filepath); // 获取文件的 tags
     const div = el.createEl('div');
     const component = new Markdown(div);
 
@@ -123,15 +123,16 @@ export class Task {
       .map((tag: string[], index: number) => {
         return `contains(tags, "#${tag}") ${
           index === tags.length - 1 ? '' : 'OR'
-        }`;
+        }`; //e.g. contains(tags, "#work") OR contains(tags, "#life")
       })
       .join(' ');
 
-    const { values: tasks } = (await this.dataview.tryQuery(`
-TASK
-FROM -"Templates"
-WHERE ${where} AND file.path != "${filepath}"
-SORT completed ASC
+    //FROM -"Templates"  为否定来源
+    const { values: tasks } = (await this.dataview.tryQuery(` 
+    TASK
+    FROM -"Templates" 
+    WHERE ${where} AND file.path != "${filepath}"
+    SORT completed ASC
     `)) as TaskResult;
 
     this.dataview.taskList(tasks, false, div, component);
@@ -139,6 +140,14 @@ SORT completed ASC
     ctx.addChild(component);
   };
 
+  /**
+   * @param task 
+   * @param condition 
+   * @returns 
+   * @description 过滤任务
+   * 1. 传入任务本身，传入查询任务类型，和查询日期范围
+   * 2. 返回传入的任务是否符合查询条件
+   */
   filter(
     task: STask,
     condition: TaskConditionType = {
@@ -148,12 +157,12 @@ SORT completed ASC
     const { date = TaskStatusType.DONE, from, to } = condition;
 
     if (!task) return false;
-
+  
     if (!from && !to) return false;
 
     if (
       task?.section?.type === 'header' &&
-      task?.section?.subpath?.trim() === this.settings.habitHeader.trim()
+      task?.section?.subpath?.trim() === this.settings.habitHeader.trim() //对任务所在的文件章节进行判断（所以这导致只会搜索出日记部分的任务列表）
     )
       return false;
 
@@ -162,6 +171,7 @@ SORT completed ASC
     if (date === TaskStatusType.DONE) {
       // filter by done date
       const ret = task?.text.match(/✅ (\d\d\d\d-\d\d-\d\d)/);
+      
 
       if (!ret) return false;
       dateText = ret[1];
