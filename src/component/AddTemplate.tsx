@@ -1,7 +1,7 @@
 import * as React from 'react';
 import { useState } from 'react';
 import { useApp } from 'src/hooks/useApp';
-import { Notice, TFile, moment } from 'obsidian';
+import { Notice, TFile } from 'obsidian';
 import {
   Form,
   Button,
@@ -104,7 +104,7 @@ export const AddTemplate = () => {
         folder = `${
           settings.periodicNotesPath
         }/${year}/${periodicActiveTab}/${String(
-          moment(values.daily).month() + 1
+          values[key].month() + 1
         ).padStart(2, '0')}`;
         value = values[key].format('YYYY-MM-DD');
       } else if (periodicActiveTab === WEEKLY) {
@@ -149,7 +149,10 @@ export const AddTemplate = () => {
       }
 
       const fileCreated = await app.vault.create(file, templateContent);
-
+      await new Promise((resolve) => {
+        // compatible with Templater plugin: https://github.com/SilentVoid13/Templater/commit/1117b48906e9ffba6bacd8d6768e63ed3eacd5d9
+        setTimeout(resolve, 500);
+      });
       await Promise.all([
         app.fileManager.processFrontMatter(fileCreated, (frontMatter) => {
           if (!tag) {
